@@ -1,0 +1,123 @@
+name: Flutter Package Workflow
+
+on:
+  workflow_call:
+    inputs:
+      analyze_directories:
+        required: false
+        type: string
+        default: ''
+      flutter_sdk:
+        required: false
+        type: string
+        default: 'stable'
+      format_directories:
+        required: false
+        type: string
+        default: '.'
+      min_pana_score:
+        required: false
+        type: number
+        default: 160
+      run_tests:
+        required: false
+        type: boolean
+        default: true
+      runs_on:
+        required: false
+        type: string
+        default: 'ubuntu-latest'
+      setup:
+        required: false
+        type: string
+        default: ''
+      upload_coverage:
+        required: false
+        type: boolean
+        default: false
+      validate_dartdoc_links:
+        required: false
+        type: boolean
+        default: false
+      verify_pana_score:
+        required: false
+        type: boolean
+        default: false
+      working_directory:
+        required: false
+        type: string
+        default: '.'
+    secrets:
+      CODECOV_TOKEN:
+        required: false
+
+jobs:
+  build:
+    defaults:
+      run:
+        working-directory: ${{inputs.working_directory}}
+
+    runs-on: ${{inputs.runs_on}}
+
+    steps:
+      - name: 📚 Git Checkout
+        uses: actions/checkout@v4
+
+      - name: 🎯 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: ${{inputs.flutter_sdk}}
+          cache: true
+          cache-key: flutter-:os:-:channel:-:version:-:arch:-:hash:-${{ hashFiles('**/pubspec.lock') }}
+
+      - name: 📝 Print Flutter SDK version
+        run: flutter --version
+
+      - name: 📦 Install Dependencies
+        run: flutter pub get
+
+      - name: ⚙️ Run Setup
+        if: "${{inputs.setup != ''}}"
+        run: ${{inputs.setup}}
+
+      - name: ✨ Check Formatting
+        run: dart format --set-exit-if-changed ${{inputs.format_directories}}
+
+      - name: 🕵️ Analyze
+        run: flutter analyze --fatal-infos --fatal-warnings ${{inputs.analyze_directories}}
+
+      - name: 🧪 Run Tests
+        if: ${{ inputs.run_tests }}
+        run: flutter test
+
+      - name: 📦 Install coverage
+        if: ${{ inputs.upload_coverage }}
+        run: flutter pub global activate coverage
+
+      - name: 📊 Generate Code Coverage
+        if: ${{ inputs.upload_coverage }}
+        run: flutter pub global run coverage:test_with_coverage
+
+      - name: 📡 Upload Code Coverage Reports to Codecov
+        if: ${{ inputs.upload_coverage }}
+        uses: codecov/codecov-action@v4
+        with:
+          fail_ci_if_error: true
+          files: coverage/lcov.info
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: 📒 Check API Reference Documentation
+        if: ${{ inputs.validate_dartdoc_links }}
+        run: dart doc --validate-links
+        
+      - name: 📦 Install Pana
+        if: ${{ inputs.verify_pana_score }}
+        run: flutter pub global activate pana
+
+      - name: 📊 Verify Pana Score
+        if: ${{ inputs.verify_pana_score }}
+        run: |
+          PANA=$(pana . --no-warning); PANA_SCORE=$(echo $PANA | sed -n "s/.*Points: \([0-9]*\)\/\([0-9]*\)./\1\/\2/p")
+          echo "Score: $PANA_SCORE"
+          IFS='/'; read -a SCORE_ARR <<< "$PANA_SCORE"; SCORE=SCORE_ARR[0];
+          if (( $SCORE < ${{inputs.min_pana_score}} )); then echo "The minimum score of ${{inputs.min_pana_score}} was not met!"; exit 1; fi
