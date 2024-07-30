@@ -7,6 +7,10 @@ on:
         required: false
         type: string
         default: ''
+      codecov_flags:
+        required: false
+        type: string
+        default: ''
       flutter_sdk:
         required: false
         type: string
@@ -104,6 +108,7 @@ jobs:
         with:
           fail_ci_if_error: true
           files: coverage/lcov.info
+          flags: ${{ inputs.codecov_flags }}
           token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: 📒 Check API Reference Documentation
