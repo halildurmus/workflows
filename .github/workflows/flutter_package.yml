@@ -119,6 +119,11 @@ jobs:
         if: ${{ inputs.verify_pana_score }}
         run: flutter pub global activate pana
 
+      - name: 📦 Install webp
+        if: ${{ inputs.verify_pana_score && inputs.runs_on == 'ubuntu-latest' }}
+        run: |
+          sudo apt-get -y install webp
+
       - name: 📊 Verify Pana Score
         if: ${{ inputs.verify_pana_score }}
         run: |
