@@ -118,7 +118,7 @@ jobs:
         run: dart pub global activate pana
 
       - name: 📦 Install webp
-        if: ${{ inputs.verify_pana_score && inputs.runs_on == "ubuntu-latest" }}
+        if: ${{ inputs.verify_pana_score && inputs.runs_on == 'ubuntu-latest' }}
         run: |
           sudo apt-get -y install webp
         
