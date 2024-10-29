@@ -127,7 +127,6 @@ jobs:
       - name: 📊 Verify Pana Score
         if: ${{ inputs.verify_pana_score }}
         run: |
-          PANA=$(pana . --no-warning --flutter-sdk $(flutter --no-version-check --version --machine | jq -r '.flutterRoot')); PANA_SCORE=$(echo $PANA | sed -n "s/.*Points: \([0-9]*\)\/\([0-9]*\)./\1\/\2/p")
-          echo "Score: $PANA_SCORE"
-          IFS='/'; read -a SCORE_ARR <<< "$PANA_SCORE"; SCORE=SCORE_ARR[0];
-          if (( $SCORE < ${{inputs.min_pana_score}} )); then echo "The minimum score of ${{inputs.min_pana_score}} was not met!"; exit 1; fi
+          pana --no-warning --exit-code-threshold=0 --json |
+            --flutter-sdk $(flutter --no-version-check --version --machine | jq -r '.flutterRoot')
+
