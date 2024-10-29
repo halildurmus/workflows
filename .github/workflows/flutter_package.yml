@@ -127,6 +127,6 @@ jobs:
       - name: 📊 Verify Pana Score
         if: ${{ inputs.verify_pana_score }}
         run: |
-          pana --no-warning --exit-code-threshold=0 --json |
+          pana --no-warning --exit-code-threshold=0 --json \
             --flutter-sdk $(flutter --no-version-check --version --machine | jq -r '.flutterRoot')
 
