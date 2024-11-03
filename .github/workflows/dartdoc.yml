@@ -1,0 +1,37 @@
+name: API Documentation Workflow
+
+on:
+  workflow_call:
+    inputs:
+      dart_sdk:
+        required: false
+        type: string
+        default: 'stable'
+      runs_on:
+        required: false
+        type: string
+        default: 'ubuntu-latest'
+      working_directory:
+        required: false
+        type: string
+        default: '.'
+
+jobs:
+  build:
+    defaults:
+      run:
+        working-directory: ${{ inputs.working_directory }}
+
+    runs-on: ${{ inputs.runs_on }}
+
+    steps:
+      - name: 📚 Git Checkout
+        uses: actions/checkout@v4
+
+      - name: 🎯 Setup Dart
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: ${{ inputs.dart_sdk }}
+
+      - name: 📒 Check API Documentation
+        run: dart doc --dry-run
