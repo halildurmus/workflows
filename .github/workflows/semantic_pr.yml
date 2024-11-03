@@ -1,4 +1,4 @@
-name: Semantic PR
+name: Semantic PR Workflow
 
 on:
   workflow_call:
