@@ -1,0 +1,101 @@
+name: Dart Package Workflow
+
+on:
+  workflow_call:
+    inputs:
+      analyze_directories:
+        required: false
+        type: string
+        default: 'lib test'
+      check_coverage:
+        required: false
+        type: boolean
+        default: false
+      codecov_flags:
+        required: false
+        type: string
+        default: ''
+      concurrency:
+        required: false
+        type: string
+        default: '6'
+      dart_sdk:
+        required: false
+        type: string
+        default: 'stable'
+      format_directories:
+        required: false
+        type: string
+        default: '.'
+      format_line_length:
+        required: false
+        type: string
+        default: '80'
+      no_example:
+        required: false
+        type: boolean
+        default: false
+      runs_on:
+        required: false
+        type: string
+        default: 'ubuntu-latest'
+      setup:
+        required: false
+        type: string
+        default: ''
+      working_directory:
+        required: false
+        type: string
+        default: '.'
+    secrets:
+      CODECOV_TOKEN:
+        required: false
+
+jobs:
+  build:
+    defaults:
+      run:
+        working-directory: ${{ inputs.working_directory }}
+
+    runs-on: ${{ inputs.runs_on }}
+
+    steps:
+      - name: 📚 Git Checkout
+        uses: actions/checkout@v4
+
+      - name: 🎯 Setup Dart
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: ${{ inputs.dart_sdk }}
+
+      - name: 📦 Install Dependencies
+        run: dart pub get ${{ inputs.no_example && '--no-example' || '' }}
+
+      - name: ⚙️ Run Setup
+        if: "${{ inputs.setup != '' }}"
+        run: ${{ inputs.setup }}
+
+      - name: ✨ Check Formatting
+        run: dart format --line-length ${{ inputs.format_line_length }} --set-exit-if-changed ${{ inputs.format_directories }}
+
+      - name: 🕵️ Analyze
+        run: dart analyze --fatal-infos --fatal-warnings ${{ inputs.analyze_directories }}
+
+      - name: 🧪 Run Tests
+        if: ${{ !inputs.check_coverage }}
+        run: dart test -j ${{ inputs.concurrency }}
+
+      - name: 📊 Generate Code Coverage
+        if: ${{ inputs.check_coverage }}
+        run: |
+          dart pub global activate coverage
+          dart pub global run coverage:test_with_coverage
+
+      - name: 📡 Upload Code Coverage Reports to Codecov
+        if: ${{ inputs.check_coverage }}
+        uses: codecov/codecov-action@v4
+        with:
+          fail_ci_if_error: true
+          files: coverage/lcov.info
+          flags: ${{ inputs.codecov_flags }}
+          token: ${{ secrets.CODECOV_TOKEN }}
