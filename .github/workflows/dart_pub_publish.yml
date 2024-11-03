@@ -1,0 +1,57 @@
+name: Dart Pub Publish Workflow
+
+on:
+  workflow_call:
+    inputs:
+      dart_sdk:
+        required: false
+        type: string
+        default: 'stable'
+      working_directory:
+        required: false
+        type: string
+        default: '.'
+      runs_on:
+        required: false
+        type: string
+        default: 'ubuntu-latest'
+      timeout_minutes:
+        required: false
+        type: number
+        default: 5
+    secrets:
+      pub_credentials:
+        required: true
+
+jobs:
+  publish:
+    defaults:
+      run:
+        working-directory: ${{ inputs.working_directory }}
+
+    runs-on: ${{ inputs.runs_on }}
+
+    timeout-minutes: ${{ inputs.timeout_minutes }}
+
+    steps:
+      - name: 📚 Git Checkout
+        uses: actions/checkout@v4
+
+      - name: 🎯 Setup Dart
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: ${{ inputs.dart_sdk }}
+
+      - name: 📦 Install Dependencies
+        run: dart pub get
+
+      - name: 🔐 Setup Pub Credentials
+        run: |
+          mkdir -p $XDG_CONFIG_HOME/dart
+          echo '${{ secrets.pub_credentials }}' > "$XDG_CONFIG_HOME/dart/pub-credentials.json"
+
+      - name: 🌵 Dry Run
+        run: dart pub publish --dry-run
+
+      - name: 📢 Publish
+        run: dart pub publish -f
