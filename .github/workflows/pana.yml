@@ -1,0 +1,46 @@
+name: Pana Workflow
+
+on:
+  workflow_call:
+    inputs:
+      min_score:
+        required: false
+        type: number
+        default: 160
+      pana_version:
+        required: false
+        type: string
+      runs_on:
+        required: false
+        type: string
+        default: 'ubuntu-latest'
+      working_directory:
+        required: false
+        type: string
+        default: '.'
+
+jobs:
+  build:
+    defaults:
+      run:
+        working-directory: ${{inputs.working_directory}}
+
+    runs-on: ${{inputs.runs_on}}
+
+    steps:
+      - name: 📚 Git Checkout
+        uses: actions/checkout@v4
+
+      - name: 🐦 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: 📦 Install Pana
+        run: flutter pub global activate pana ${{inputs.pana_version}}
+
+      - name: 📊 Verify Pana Score
+        run: |
+          pana --no-warning --json \
+          --exit-code-threshold=$(( 160 - ${{ inputs.min_score }} ))
