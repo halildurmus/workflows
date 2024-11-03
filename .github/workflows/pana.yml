@@ -23,9 +23,9 @@ jobs:
   build:
     defaults:
       run:
-        working-directory: ${{inputs.working_directory}}
+        working-directory: ${{ inputs.working_directory }}
 
-    runs-on: ${{inputs.runs_on}}
+    runs-on: ${{ inputs.runs_on }}
 
     steps:
       - name: 📚 Git Checkout
@@ -38,7 +38,7 @@ jobs:
           cache: true
 
       - name: 📦 Install Pana
-        run: flutter pub global activate pana ${{inputs.pana_version}}
+        run: flutter pub global activate pana ${{ inputs.pana_version }}
 
       - name: 📊 Verify Pana Score
         run: |
