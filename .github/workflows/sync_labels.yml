@@ -19,5 +19,4 @@ jobs:
       - name: 🚀 Run Label Sync
         uses: srealmoreno/label-sync-action@v2
         with:
-          config-file: |
-            .github/labels.yml
+          config-file: .github/labels.yml
