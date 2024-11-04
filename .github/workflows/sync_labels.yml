@@ -1,4 +1,4 @@
-name: ♻️ Sync Labels Workflow
+name: ♻️ Sync Labels
 
 on:
   push:
