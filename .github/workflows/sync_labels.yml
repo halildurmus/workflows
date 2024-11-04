@@ -1,4 +1,4 @@
-name: ♻️ Sync Labels
+name: Sync Labels
 
 on:
   push:
@@ -13,6 +13,7 @@ permissions:
 
 jobs:
   labels:
+    name: ♻️ Sync Labels
     runs-on: ubuntu-22.04
     steps:
       - name: ⤵️ Check out code from GitHub
