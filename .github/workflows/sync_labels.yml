@@ -13,7 +13,6 @@ permissions:
 
 jobs:
   labels:
-    name: ♻️ Sync labels
     runs-on: ubuntu-22.04
     steps:
       - name: ⤵️ Check out code from GitHub
@@ -22,4 +21,5 @@ jobs:
       - name: 🚀 Run Label Sync
         uses: srealmoreno/label-sync-action@v2
         with:
+          clean-labels: true
           config-file: .github/labels.yml
