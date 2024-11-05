@@ -3,12 +3,14 @@ codecov
 codegen
 codeowners
 data
+durmus
 endtemplate
 firebase
 firestore
 formz
 gcloud
 genhtml
+halil
 lcov
 livestream
 minimalistic
