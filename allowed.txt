@@ -1,6 +1,7 @@
 blazingly
 codecov
 codegen
+codeowners
 data
 endtemplate
 firebase
