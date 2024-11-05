@@ -11,6 +11,7 @@ formz
 gcloud
 genhtml
 halil
+halildurmus
 lcov
 livestream
 minimalistic
