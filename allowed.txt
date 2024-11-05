@@ -1,4 +1,5 @@
 blazingly
+codecov
 codegen
 data
 endtemplate
