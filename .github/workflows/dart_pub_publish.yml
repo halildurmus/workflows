@@ -1,4 +1,4 @@
-name: Dart Pub Publish Workflow
+name: Publish Dart Package Workflow
 
 on:
   workflow_call:
@@ -20,7 +20,9 @@ on:
         type: number
         default: 5
     secrets:
-      pub_credentials:
+      GITHUB_PAT:
+        required: true
+      PUB_CREDENTIALS:
         required: true
 
 jobs:
@@ -48,10 +50,24 @@ jobs:
       - name: 🔐 Setup Pub Credentials
         run: |
           mkdir -p $XDG_CONFIG_HOME/dart
-          echo '${{ secrets.pub_credentials }}' > "$XDG_CONFIG_HOME/dart/pub-credentials.json"
+          echo '${{ secrets.PUB_CREDENTIALS }}' > "$XDG_CONFIG_HOME/dart/pub-credentials.json"
 
       - name: 🌵 Dry Run
         run: dart pub publish --dry-run
 
       - name: 📢 Publish
         run: dart pub publish -f
+
+      - name: ⬇️ Download extract_latest_changelog.dart
+        run: curl -L https://raw.githubusercontent.com/halildurmus/workflows/main/tools/extract_latest_changelog.dart
+
+      - name: 🚀 Create GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_PAT }}
+          commit: main
+          tag: "v$(grep '^version:' pubspec.yaml | awk '{print $2}')"
+          name: "v$(grep '^version:' pubspec.yaml | awk '{print $2}')"
+          body: $(dart run extract_latest_changelog.dart)
+          draft: false
+          prerelease: false
