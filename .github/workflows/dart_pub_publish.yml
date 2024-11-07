@@ -7,10 +7,6 @@ on:
         required: false
         type: string
         default: 'stable'
-      working_directory:
-        required: false
-        type: string
-        default: '.'
       runs_on:
         required: false
         type: string
@@ -19,6 +15,10 @@ on:
         required: false
         type: number
         default: 5
+      working_directory:
+        required: false
+        type: string
+        default: '.'
     secrets:
       GITHUB_PAT:
         required: true
