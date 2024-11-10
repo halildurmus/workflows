@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 /// Extracts the latest release section from a Markdown-formatted CHANGELOG
@@ -29,26 +28,42 @@ import 'dart:io';
 ///
 /// - Initial stable release with major features.
 /// ```
-///
-/// This function stops reading once it encounters the start of the next release
-/// section.
 String extractLatestChangelog([String changelogPath = 'CHANGELOG.md']) {
-  final changelogContent = File(changelogPath).readAsStringSync();
-
-  final latestRelease = StringBuffer();
-  var isWithinLatestReleaseSection = false;
-
-  for (final line in LineSplitter.split(changelogContent)) {
-    if (line.startsWith('## ')) {
-      // Stop after capturing the latest release section.
-      if (isWithinLatestReleaseSection) break;
-      isWithinLatestReleaseSection = true;
-    }
-
-    if (isWithinLatestReleaseSection) latestRelease.writeln(line);
+  final changelogFile = File(changelogPath);
+  final changelogContent = changelogFile
+      .readAsStringSync()
+      .toUnixLineEndings()
+      .stripChangelogHeader();
+  final start = changelogContent.indexOf(versionSectionPattern);
+  if (start == -1) {
+    throw const FormatException('No version section found in CHANGELOG.md');
   }
 
-  return latestRelease.toString().trimRight();
+  final end = changelogContent.indexOf(versionSectionPattern, start + 1);
+  if (end == -1) return changelogContent.trim();
+  return changelogContent.substring(0, end).trim();
+}
+
+/// Regular expression to match version sections like `## 1.0.0` or
+/// `## [1.0.0]`.
+final versionSectionPattern = RegExp(
+  r'^## \[?(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)'
+  r'(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?'
+  r'(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?\]?'
+  r'( - \d{4}-\d{2}-\d{2})?$',
+  multiLine: true,
+);
+
+extension on String {
+  String stripChangelogHeader() => replaceFirst(
+        '''
+# Changelog\n
+All notable changes to this project will be documented in this file.\n
+''',
+        '',
+      );
+
+  String toUnixLineEndings() => replaceAll('\r\n', '\n');
 }
 
 void main() => print(extractLatestChangelog());
