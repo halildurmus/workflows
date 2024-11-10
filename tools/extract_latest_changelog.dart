@@ -44,8 +44,8 @@ String extractLatestChangelog([String changelogPath = 'CHANGELOG.md']) {
   return changelogContent.substring(0, end).trim();
 }
 
-/// Regular expression to match version sections like `## 1.0.0` or
-/// `## [1.0.0]`.
+/// Regular expression to match version sections like `## 1.0.0`, `## [1.0.0]`,
+/// or `## [1.0.0] - 2024-10-01`.
 final versionSectionPattern = RegExp(
   r'^## \[?(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)'
   r'(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?'
