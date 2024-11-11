@@ -1,0 +1,86 @@
+name: Prepare Release Workflow
+
+on:
+  workflow_call:
+    inputs:
+      working_directory:
+        required: false
+        type: string
+        default: '.'
+    secrets:
+      GITHUB_PAT:
+        required: true
+
+jobs:
+  check-version:
+    defaults:
+      run:
+        working-directory: ${{ inputs.working_directory }}
+
+    runs-on: ubuntu-latest
+
+    outputs:
+      needs_release: ${{ steps.check_version.outputs.needs_release }}
+
+    steps:
+      - name: 📚 Git Checkout
+        uses: actions/checkout@v4
+
+      - name: Check if New Release is Needed
+        id: check_version
+        run: |
+          current_version=$(grep '^version:' pubspec.yaml | awk '{print $2}')
+          if [[ "$current_version" == *"-wip" ]]; then
+            echo "needs_release=true" >> $GITHUB_ENV
+          else
+            echo "needs_release=false" >> $GITHUB_ENV
+          fi
+
+  prepare-release:
+    defaults:
+      run:
+        working-directory: ${{ inputs.working_directory }}
+
+    runs-on: ubuntu-latest
+
+    needs: check-version
+    if: needs.check-version.outputs.needs_release == 'true'
+
+    steps:
+      - name: 📚 Git Checkout
+        uses: actions/checkout@v4
+
+      - name: Remove "-wip" Suffix from Version and Update Changelog
+        run: |
+          # Get the current version and remove "-wip" suffix
+          current_version=$(grep '^version:' pubspec.yaml | awk '{print $2}')
+          next_version=${current_version%-wip}
+
+          # Update pubspec.yaml with the new version
+          sed -i "s/^version: .*/version: $next_version/" pubspec.yaml
+          echo "next_version=$next_version" >> $GITHUB_ENV
+
+          # Update the CHANGELOG.md with the new version and today's date
+          today=$(date +"%Y-%m-%d")
+          sed -i "s/## \[unreleased\]/## [$next_version] - $today/" CHANGELOG.md
+
+          # Update the [unreleased] link in the CHANGELOG.md with the new version
+          sed -i "s/^\[unreleased\]: \(.*compare\/v[0-9.]*\)\.\.HEAD/[$next_version]: \1..v$next_version/" CHANGELOG.md
+
+          # Commit changes
+          git config user.name "Halil Durmus"
+          git config user.email "durmushalil@proton.me"
+          git add CHANGELOG.md pubspec.yaml
+          git commit -m "chore(release): v${next_version}"
+
+      - name: Create Pull Request
+        env:
+          NEXT_VERSION: ${{ env.next_version }}
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_PAT }}
+          commit-message: 'chore(release): v${NEXT_VERSION}'
+          branch: release-${NEXT_VERSION}
+          title: 'chore(release): v${NEXT_VERSION}'
+          body: This PR prepares the release of version v${NEXT_VERSION}.
+          labels: release
