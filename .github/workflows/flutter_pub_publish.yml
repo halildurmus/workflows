@@ -61,9 +61,6 @@ jobs:
       - name: 🌵 Dry Run
         run: flutter pub publish --dry-run
 
-      - name: 📢 Publish
-        run: flutter pub publish -f
-
       - name: ⬇️ Download extract_latest_changelog.dart
         run: curl -L https://raw.githubusercontent.com/halildurmus/workflows/main/tools/extract_latest_changelog.dart
 
@@ -77,3 +74,6 @@ jobs:
           body: $(dart run extract_latest_changelog.dart)
           draft: false
           prerelease: false
+
+      - name: 📢 Publish
+        run: flutter pub publish -f
