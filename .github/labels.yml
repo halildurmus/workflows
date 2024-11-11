@@ -90,6 +90,10 @@
   color: e29a12
   description: A code change that neither fixes a bug nor add a feature
 
+- name: release
+  color: 0075ca
+  description: Release preparation and versioning tasks
+
 - name: revert
   color: d4c5f9
   description: Changes that reverts a previous commit
