@@ -26,8 +26,6 @@ on:
     secrets:
       GITHUB_PAT:
         required: true
-      PUB_CREDENTIALS:
-        required: true
 
 jobs:
   publish:
@@ -53,10 +51,10 @@ jobs:
       - name: 📦 Install Dependencies
         run: flutter pub get
 
-      - name: 🔐 Setup Pub Credentials
-        run: |
-          mkdir -p $XDG_CONFIG_HOME/dart
-          echo '${{ secrets.PUB_CREDENTIALS }}' > "$XDG_CONFIG_HOME/dart/pub-credentials.json"
+      - name: 🎯 Setup Dart
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
 
       - name: 🌵 Dry Run
         run: flutter pub publish --dry-run
