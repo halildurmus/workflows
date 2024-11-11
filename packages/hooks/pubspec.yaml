@@ -1,0 +1,26 @@
+name: hooks
+description: A collection of Git hooks for Dart and Flutter projects.
+publish_to: none
+
+environment:
+  sdk: ^3.5.0
+
+dependencies:
+  args: ^2.6.0
+  conventional_commit: ^0.6.0+1
+  next_version:
+    git:
+      url: https://github.com/halildurmus/workflows.git
+      path: packages/next_version
+  yaml_edit: ^2.2.1
+
+dev_dependencies:
+  lints: ^5.0.0
+
+executables:
+  analyze: bin/analyze.dart
+  bump_version: bin/next_version.dart
+  check_commit: bin/check_commit.dart
+  format: bin/format.dart
+  test: bin/test.dart
+  update_changelog: bin/update_changelog.dart
