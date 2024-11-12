@@ -37,18 +37,6 @@ jobs:
     runs-on: ${{ inputs.runs_on }}
 
     steps:
-      - name: 🤖 Ensure Commit is Semantic
-        if: github.event_name == 'pull_request'
-        uses: amannn/action-semantic-pull-request@v5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          validateSingleCommit: false
-          ignoreLabels: |
-            bot
-            ignore-semantic-pull-request
-          wip: false
-
       - name: 📚 Git Checkout
         uses: actions/checkout@v4
         with:
@@ -79,6 +67,9 @@ jobs:
 
       - name: 🔍 Check Package Version
         run: dart run hooks:bump_version
+
+      - name: 📦 Install git-cliff
+        run: cargo install git-cliff
 
       - name: 📝 Check CHANGELOG
         run: dart run hooks:update_changelog
