@@ -20,7 +20,7 @@ on:
         type: string
         default: '.'
     secrets:
-      GITHUB_PAT:
+      token:
         required: true
 
 jobs:
@@ -54,7 +54,7 @@ jobs:
       - name: 🚀 Create GitHub Release
         uses: ncipollo/release-action@v1
         with:
-          token: ${{ secrets.GITHUB_PAT }}
+          token: ${{ secrets.token }}
           commit: main
           tag: "v$(grep '^version:' pubspec.yaml | awk '{print $2}')"
           name: "v$(grep '^version:' pubspec.yaml | awk '{print $2}')"
