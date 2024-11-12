@@ -33,6 +33,7 @@ jobs:
     uses: halildurmus/workflows/.github/workflows/semantic_pr.yml@main
 
   health:
+    needs: [semantic-pr]
     defaults:
       run:
         working-directory: ${{ inputs.working_directory }}
@@ -42,6 +43,8 @@ jobs:
     steps:
       - name: 📚 Git Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: 🎯 Setup Dart
         if: ${{ !inputs.use_flutter }}
