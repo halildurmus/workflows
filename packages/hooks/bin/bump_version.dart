@@ -8,78 +8,71 @@ void main(List<String> args) {
   final pubspecFile = File('pubspec.yaml');
   final pubspecContent = pubspecFile.readAsStringSync();
   final yamlEditor = YamlEditor(pubspecContent);
+  final currentVersion = _getCurrentVersion(yamlEditor);
+  final lastTag = _getLastGitTag();
 
-  // Retrieve the current version from pubspec.yaml.
+  final commitMessages = _getCommitMessagesSince(lastTag);
+  if (commitMessages.isEmpty) {
+    print('✅ No new commits since the last tag.');
+    return;
+  }
+
+  print('📜 Commit messages since the last tag:');
+  commitMessages.forEach(print);
+
+  final nextVersion = _calculateNextVersion(lastTag, commitMessages);
+  final nextWipVersion = '$nextVersion-wip';
+  if (nextWipVersion == currentVersion) {
+    print('✅ No version bump required.');
+    return;
+  }
+
+  print('🚀 Next WIP version: $nextWipVersion');
+  _updatePubspecVersion(pubspecFile, yamlEditor, nextWipVersion);
+}
+
+String _getCurrentVersion(YamlEditor yamlEditor) {
   final versionNode =
       yamlEditor.parseAt(['version'], orElse: () => wrapAsYamlNode(null));
   if (versionNode.value == null) {
-    print('❌ "version" field not found in "pubspec.yaml".');
-    exit(1);
+    _exitWithError('❌ "version" field not found in "pubspec.yaml".');
   }
 
   final currentVersion = versionNode.value as String;
   print('📦 Current version: $currentVersion');
+  return currentVersion;
+}
 
-  // Get the latest Git tag.
-  final lastTag = _getLastGitTag();
-  if (lastTag == null) {
-    print('❌ Failed to retrieve the latest Git tag.');
-    exit(1);
+String _getLastGitTag() {
+  final result = Process.runSync(
+    'git',
+    const ['describe', '--tags', '--abbrev=0'],
+  );
+  if (result.exitCode != 0) {
+    _exitWithError('❌ Failed to retrieve the latest Git tag.');
   }
-  print('🔖 Last tag: $lastTag');
+  return result.stdout.toString().trim();
+}
 
-  // Get the commit messages since the last tag.
-  final commitMessages = _getCommitMessagesSince(lastTag);
-  if (commitMessages == null) {
-    print('❌ Error retrieving commit messages.');
-    exit(1);
+List<String> _getCommitMessagesSince(String latestTag) {
+  final result = Process.runSync(
+    'git',
+    ['log', '$latestTag..HEAD', '--pretty=format:%s'],
+  );
+  if (result.exitCode != 0) {
+    _exitWithError('❌ Error retrieving commit messages.');
   }
+  return LineSplitter.split(result.stdout.toString().trim()).toList();
+}
 
-  if (commitMessages.isEmpty) {
-    // If no new commits, exit with success.
-    print('✅ No new commits since the last tag.');
-    exit(0);
-  } else {
-    // Display commit messages.
-    print('📜 Commit messages since the last tag:');
-    commitMessages.forEach(print);
-  }
-
+Version _calculateNextVersion(String lastTag, List<String> commitMessages) {
   final lastPublishedVersion = Version.parse(lastTag.substring(1));
-  // Calculate the next version based on the last tag and commit messages since.
   final nextVersion = lastPublishedVersion.calculateNext(commitMessages);
   if (nextVersion == lastPublishedVersion) {
     print('✅ No version bump required.');
     exit(0);
   }
-
-  final nextWipVersion = '$nextVersion-wip';
-  print('🚀 Next wip version: $nextWipVersion');
-
-  // If no changes in the version, exit with success.
-  if (nextWipVersion == currentVersion) {
-    print('✅ No version bump required.');
-    exit(0);
-  }
-
-  // Update the version in pubspec.yaml with the next wip version.
-  _updatePubspecVersion(pubspecFile, yamlEditor, nextWipVersion);
-}
-
-String? _getLastGitTag() {
-  final result =
-      Process.runSync('git', const ['describe', '--tags', '--abbrev=0']);
-  if (result.exitCode != 0) return null;
-  return result.stdout.toString().trim();
-}
-
-List<String>? _getCommitMessagesSince(String latestTag) {
-  final result = Process.runSync(
-    'git',
-    ['log', '$latestTag..HEAD', '--pretty=format:%s'],
-  );
-  if (result.exitCode != 0) return null;
-  return LineSplitter.split(result.stdout.toString().trim()).toList();
+  return nextVersion;
 }
 
 void _updatePubspecVersion(
@@ -96,7 +89,11 @@ void _updatePubspecVersion(
     print('   git commit --amend -C HEAD --no-verify');
     exit(1);
   } catch (e) {
-    print('❌ Error updating pubspec.yaml: $e');
-    exit(1);
+    _exitWithError('❌ Error updating pubspec.yaml: $e');
   }
+}
+
+void _exitWithError(String message) {
+  print(message);
+  exit(1);
 }
