@@ -12,7 +12,7 @@ void main(List<String> args) {
     _exitWithError('🚨 Error generating changelog:\n${result.stdout}');
   }
 
-  final newChangelog = result.stdout.toString().trim();
+  final newChangelog = result.stdout.toString().toUnixLineEndings().trim();
   if (!newChangelog.contains('## [unreleased]')) {
     print('✅ No new changes to update in CHANGELOG.md.');
     exit(0);
@@ -26,7 +26,7 @@ void _updateChangelog(String newChangelog) {
     final changelogFile = File('CHANGELOG.md');
     var changelogContent = changelogFile.readAsStringSync().toUnixLineEndings();
     // Check if new changelog is already present at the start of the file.
-    if (changelogContent.startsWith(newChangelog.toUnixLineEndings())) {
+    if (changelogContent.startsWith(newChangelog)) {
       print('✅ No new changes to update in CHANGELOG.md.');
       exit(0);
     }
@@ -35,7 +35,7 @@ void _updateChangelog(String newChangelog) {
     changelogContent =
         changelogContent.stripChangelogHeader().stripUnreleasedSection();
     changelogContent =
-        '$newChangelog\n\n$changelogContent'.toWindowsLineEndings();
+        '$newChangelog\n\n$changelogContent'.toPlatformLineEndings();
 
     // Write the updated changelog to the file.
     changelogFile.writeAsStringSync(changelogContent);
@@ -57,8 +57,10 @@ void _exitWithError(String message) {
 extension on String {
   String stripChangelogHeader() => replaceFirst(
         '''
-# Changelog\n
-All notable changes to this project will be documented in this file.\n
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
 ''',
         '',
       );
@@ -71,7 +73,18 @@ All notable changes to this project will be documented in this file.\n
     return substring(end);
   }
 
+  String toPlatformLineEndings() =>
+      Platform.isWindows ? toWindowsLineEndings() : toUnixLineEndings();
+
   String toUnixLineEndings() => replaceAll('\r\n', '\n');
 
-  String toWindowsLineEndings() => replaceAll('\n', '\r\n');
+  String toWindowsLineEndings() => replaceAllMapped(
+        '\n',
+        (match) {
+          final start = match.start;
+          // Ensure we don't go out of bounds when checking for preceding '\r'.
+          if (start > 0 && match.input[start - 1] == '\r') return '\n';
+          return '\r\n';
+        },
+      );
 }
