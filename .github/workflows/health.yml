@@ -29,11 +29,7 @@ on:
         default: '.'
 
 jobs:
-  semantic-pr:
-    uses: halildurmus/workflows/.github/workflows/semantic_pr.yml@main
-
   health:
-    needs: [semantic-pr]
     defaults:
       run:
         working-directory: ${{ inputs.working_directory }}
@@ -41,6 +37,18 @@ jobs:
     runs-on: ${{ inputs.runs_on }}
 
     steps:
+      - name: 🤖 Ensure Commit is Semantic
+        if: github.event_name == 'pull_request'
+        uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          validateSingleCommit: false
+          ignoreLabels: |
+            bot
+            ignore-semantic-pull-request
+          wip: false
+
       - name: 📚 Git Checkout
         uses: actions/checkout@v4
         with:
