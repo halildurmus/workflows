@@ -25,8 +25,10 @@
 - [ ] ❌ `!` – Breaking change (fix or feature that causes existing functionality to change)
 - [ ] ⚡ `perf` – Performance improvement
 - [ ] 🧹 `refactor` – Code refactor (no functionality change)
-- [ ] 🎨 `style` – Code style changes (formatting, renaming, etc.)
-- [ ] ✅ `ci` – Build configuration change
 - [ ] 📝 `docs` – Documentation update
+- [ ] 🎨 `style` – Code style changes (formatting, renaming, etc.)
 - [ ] 🧪 `test` – Test update or addition
+- [ ] 🔧 `build` – Build related changes
+- [ ] ✅ `ci` – CI related changes
 - [ ] 🗑️ `chore` – Chore (maintenance, non-production code change)
+- [ ] ◀️  `revert` – Revert a previous commit
