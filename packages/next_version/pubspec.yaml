@@ -1,6 +1,6 @@
 name: next_version
-description: A package that helps you to determine the next version of your
-  package based on the commits in your repository.
+description: A package that determines the next project version by analyzing
+  conventional commits.
 publish_to: none
 
 environment:
@@ -8,7 +8,6 @@ environment:
 
 dependencies:
   conventional_commit: ^0.6.0+1
-  meta: ^1.16.0
   version: ^3.0.2
 
 dev_dependencies:
