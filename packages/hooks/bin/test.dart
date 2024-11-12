@@ -1,22 +1,24 @@
 import 'dart:io';
 
+import 'package:args/args.dart';
+
 void main(List<String> args) {
-  // Use 'dart' as the default executable if none is provided
-  final executable = args.isNotEmpty ? args.first : 'dart';
-
+  final argsParser = ArgParser()
+    ..addFlag(
+      'flutter',
+      abbr: 'f',
+      help: 'Use flutter instead of dart to run the analyze command.',
+      negatable: false,
+    );
+  final argResults = argsParser.parse(args);
+  final executable = argResults.flag('flutter') ? 'flutter' : 'dart';
   print('🧪 Running tests...');
-
-  // Run the test command.
-  final result = Process.runSync(executable, ['test', ...args]);
-
-  // Output test results.
+  final result = Process.runSync(executable, ['test', ...argResults.rest]);
   if (result.exitCode == 0) {
     print('✅ All tests passed successfully.');
   } else {
     print('🚨 Test failure(s) detected:\n\n${result.stdout}');
     print('🛑 Please review the test failure(s) above.');
   }
-
-  // Exit with the same exit code as the test process.
   exit(result.exitCode);
 }
