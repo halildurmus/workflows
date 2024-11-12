@@ -88,13 +88,21 @@ jobs:
         if: ${{ !inputs.check_coverage }}
         run: flutter test -j ${{ inputs.concurrency }}
 
-      - name: 📊 Generate Code Coverage
+      - name: 📦 Activate Coverage
         if: ${{ inputs.check_coverage }}
-        run: |
-          flutter pub global activate coverage
-          flutter run --pause-isolates-on-exit --disable-service-auth-codes --enable-vm-service=8181 test -j ${{ inputs.concurrency }} &
-          flutter pub global run coverage:collect_coverage --wait-paused --uri=http://127.0.0.1:8181/ -o coverage/coverage.json --resume-isolates
-          flutter pub global run coverage:format_coverage --packages=.dart_tool/package_config.json --lcov -i coverage/coverage.json -o coverage/lcov.info
+        run: flutter pub global activate coverage
+
+      - name: 📊 Run Tests and Start Code Coverage Service
+        if: ${{ inputs.check_coverage }}
+        run: flutter run --pause-isolates-on-exit --disable-service-auth-codes --enable-vm-service=8181 test -j ${{ inputs.concurrency }}
+
+      - name: 📊 Collect Code Coverage
+        if: ${{ inputs.check_coverage }}
+        run: flutter pub global run coverage:collect_coverage --wait-paused --uri=http://127.0.0.1:8181/ -o coverage/coverage.json --resume-isolates
+
+      - name: 📊 Format Code Coverage
+        if: ${{ inputs.check_coverage }}
+        run: flutter pub global run coverage:format_coverage --packages=.dart_tool/package_config.json --lcov -i coverage/coverage.json -o coverage/lcov.info
 
       - name: 📡 Upload Code Coverage Reports to Codecov
         if: ${{ inputs.check_coverage }}
