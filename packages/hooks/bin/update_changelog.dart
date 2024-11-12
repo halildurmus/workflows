@@ -7,41 +7,51 @@ void main(List<String> args) {
 
   // Run the git cliff changelog command.
   final result = Process.runSync('git', gitCliffArgs, stdoutEncoding: utf8);
+  // Handle changelog result.
+  if (result.exitCode != 0) {
+    _exitWithError('🚨 Error generating changelog:\n${result.stdout}');
+  }
 
-  // Output changelog results.
-  if (result.exitCode == 0) {
-    final newChangelog = result.stdout.toString().trim();
-    if (!newChangelog.contains('## [unreleased]')) {
+  final newChangelog = result.stdout.toString().trim();
+  if (!newChangelog.contains('## [unreleased]')) {
+    print('✅ No new changes to update in CHANGELOG.md.');
+    exit(0);
+  }
+
+  _updateChangelog(newChangelog);
+}
+
+void _updateChangelog(String newChangelog) {
+  try {
+    final changelogFile = File('CHANGELOG.md');
+    var changelogContent = changelogFile.readAsStringSync().toUnixLineEndings();
+    // Check if new changelog is already present at the start of the file.
+    if (changelogContent.startsWith(newChangelog.toUnixLineEndings())) {
       print('✅ No new changes to update in CHANGELOG.md.');
       exit(0);
     }
 
-    try {
-      final changelogFile = File('CHANGELOG.md');
-      var changelogContent =
-          changelogFile.readAsStringSync().toUnixLineEndings();
-      if (changelogContent.startsWith(newChangelog.toUnixLineEndings())) {
-        print('✅ No new changes to update in CHANGELOG.md.');
-        exit(0);
-      }
-      changelogContent =
-          changelogContent.stripChangelogHeader().stripUnreleasedSection();
-      changelogContent =
-          '$newChangelog\n\n$changelogContent'.toWindowsLineEndings();
-      changelogFile.writeAsStringSync(changelogContent);
-      print('📝 Changelog updated successfully.');
-      print('💡 To apply the update, stage and amend the commit:');
-      print('   git add CHANGELOG.md');
-      print('   git commit --amend -C HEAD --no-verify');
-      exit(1);
-    } catch (e) {
-      print('🚨 Error updating changelog: $e');
-      exit(1);
-    }
-  } else {
-    print('🚨 Error updating changelog:\n\n${result.stdout}');
+    // Clean up the changelog content and add the new changelog.
+    changelogContent =
+        changelogContent.stripChangelogHeader().stripUnreleasedSection();
+    changelogContent =
+        '$newChangelog\n\n$changelogContent'.toWindowsLineEndings();
+
+    // Write the updated changelog to the file.
+    changelogFile.writeAsStringSync(changelogContent);
+    print('📝 Changelog updated successfully.');
+    print('💡 To apply the update, stage and amend the commit:');
+    print('   git add CHANGELOG.md');
+    print('   git commit --amend -C HEAD --no-verify');
     exit(1);
+  } catch (e) {
+    _exitWithError('🚨 Error updating changelog: $e');
   }
+}
+
+void _exitWithError(String message) {
+  print(message);
+  exit(1);
 }
 
 extension on String {
