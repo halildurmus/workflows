@@ -69,7 +69,9 @@ jobs:
         run: dart run hooks:bump_version
 
       - name: 📦 Install git-cliff
-        run: cargo install git-cliff
-
+        uses: baptiste0928/cargo-install@v3
+        with:
+          crate: git-cliff
+          
       - name: 📝 Check CHANGELOG
         run: dart run hooks:update_changelog
