@@ -1,5 +1,5 @@
 name: hooks
-description: A collection of Git hooks for Dart and Flutter projects.
+description: A collection of scripts for Git hooks.
 publish_to: none
 
 environment:
