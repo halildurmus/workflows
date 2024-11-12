@@ -11,7 +11,7 @@ void main(List<String> args) {
 
   // Output test results.
   if (result.exitCode == 0) {
-    print('🎉 ✅ All tests passed successfully.');
+    print('✅ All tests passed successfully.');
   } else {
     print('🚨 Test failure(s) detected:\n\n${result.stdout}');
     print('🛑 Please review the test failure(s) above.');
