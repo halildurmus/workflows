@@ -5,6 +5,10 @@ updates:
     schedule:
       interval: 'daily'
   - package-ecosystem: 'pub'
-    directory: '/'
+    directory: '/packages/hooks'
+    schedule:
+      interval: 'daily'
+  - package-ecosystem: 'pub'
+    directory: '/packages/next_version'
     schedule:
       interval: 'daily'
