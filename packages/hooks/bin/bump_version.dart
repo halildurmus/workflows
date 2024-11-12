@@ -17,7 +17,7 @@ void main(List<String> args) {
     exit(1);
   }
 
-  final currentVersion = versionNode.value;
+  final currentVersion = versionNode.value as String;
   print('📦 Current version: $currentVersion');
 
   // Get the latest Git tag.
@@ -45,19 +45,25 @@ void main(List<String> args) {
     commitMessages.forEach(print);
   }
 
+  final lastPublishedVersion = Version.parse(lastTag.substring(1));
   // Calculate the next version based on the last tag and commit messages since.
-  final nextVersion =
-      '${Version.parse(lastTag.substring(1)).calculateNext(commitMessages)}-wip';
-  print('🚀 Next version: $nextVersion');
-
-  // If no changes in the version, exit with success.
-  if (nextVersion == currentVersion) {
+  final nextVersion = lastPublishedVersion.calculateNext(commitMessages);
+  if (nextVersion == lastPublishedVersion) {
     print('✅ No version bump required.');
     exit(0);
   }
 
-  // Update the version in pubspec.yaml with the next version.
-  _updatePubspecVersion(pubspecFile, yamlEditor, nextVersion);
+  final nextWipVersion = '$nextVersion-wip';
+  print('🚀 Next wip version: $nextWipVersion');
+
+  // If no changes in the version, exit with success.
+  if (nextWipVersion == currentVersion) {
+    print('✅ No version bump required.');
+    exit(0);
+  }
+
+  // Update the version in pubspec.yaml with the next wip version.
+  _updatePubspecVersion(pubspecFile, yamlEditor, nextWipVersion);
 }
 
 String? _getLastGitTag() {
