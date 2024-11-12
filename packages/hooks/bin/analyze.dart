@@ -1,30 +1,29 @@
 import 'dart:io';
 
+import 'package:args/args.dart';
+
 void main(List<String> args) {
-  // Use 'dart' as the default executable if none is provided.
-  final executable = args.isNotEmpty ? args.first : 'dart';
-
-  // Define analyze options.
-  final analyzeArgs = [
-    'analyze',
-    '--fatal-infos',
-    '--fatal-warnings',
-    ...args.skip(1),
-  ];
-
+  final argsParser = ArgParser()
+    ..addFlag(
+      'flutter',
+      abbr: 'f',
+      help: 'Use flutter instead of dart to run the analyze command.',
+      negatable: false,
+    );
+  final argResults = argsParser.parse(args);
+  final executable = argResults.flag('flutter') ? 'flutter' : 'dart';
+  final analyzeArgs = ['--fatal-infos', '--fatal-warnings', ...argResults.rest];
   print('🔍 Analyzing code...');
-
-  // Run the analyze command.
-  final result = Process.runSync(executable, analyzeArgs);
-
-  // Output analyze results.
+  final result = Process.runSync(
+    executable,
+    ['analyze', ...analyzeArgs],
+    runInShell: true,
+  );
   if (result.exitCode == 0) {
     print('✅ Analysis completed without issues.');
   } else {
     print('🚨 Analyzer issue(s) detected:\n\n${result.stdout}');
     print('🛑 Please fix the issue(s) above.');
   }
-
-  // Exit with the same exit code as the analyze process.
   exit(result.exitCode);
 }
