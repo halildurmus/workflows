@@ -1,6 +1,5 @@
-/// A library that helps you to determine the next version of your package based
-/// on the commits in your repository. package based on the commits in your
-/// repository.
+/// A library that determines the next project version by analyzing conventional
+/// commits.
 library;
 
 export 'package:version/version.dart';
