@@ -8,7 +8,7 @@ on:
         type: string
         default: '.'
     secrets:
-      GITHUB_PAT:
+      token:
         required: true
 
 jobs:
@@ -51,7 +51,7 @@ jobs:
           NEXT_VERSION: ${{ env.next_version }}
         uses: peter-evans/create-pull-request@v7
         with:
-          token: ${{ secrets.GITHUB_PAT }}
+          token: ${{ secrets.token }}
           commit-message: 'chore(release): v${NEXT_VERSION}'
           branch: release-${NEXT_VERSION}
           title: 'chore(release): v${NEXT_VERSION}'
