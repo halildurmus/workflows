@@ -1,0 +1,73 @@
+name: Health Workflow
+
+on:
+  workflow_call:
+    inputs:
+      dart_sdk:
+        required: false
+        type: string
+        default: 'stable'
+      flutter_channel:
+        required: false
+        type: string
+        default: 'stable'
+      flutter_version:
+        required: false
+        type: string
+        default: ''
+      runs_on:
+        required: false
+        type: string
+        default: 'ubuntu-latest'
+      use_flutter:
+        required: false
+        type: boolean
+        default: false
+      working_directory:
+        required: false
+        type: string
+        default: '.'
+
+jobs:
+  semantic-pr:
+    uses: halildurmus/workflows/.github/workflows/semantic_pr.yml@main
+
+  health:
+    defaults:
+      run:
+        working-directory: ${{ inputs.working_directory }}
+
+    runs-on: ${{ inputs.runs_on }}
+
+    steps:
+      - name: 📚 Git Checkout
+        uses: actions/checkout@v4
+
+      - name: 🎯 Setup Dart
+        if: ${{ !inputs.use_flutter }}
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: ${{ inputs.dart_sdk }}
+
+      - name: 🐦 Setup Flutter
+        if: ${{ inputs.use_flutter }}
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ inputs.flutter_version }}
+          channel: ${{ inputs.flutter_channel }}
+          cache: true
+          cache-key: flutter-:os:-:channel:-:version:-:arch:-:hash:-${{ hashFiles('**/pubspec.lock') }}
+
+      - name: 📦 Install Dependencies
+        if: ${{ !inputs.use_flutter }}
+        run: dart pub get
+
+      - name: 📦 Install Dependencies
+        if: ${{ inputs.use_flutter }}
+        run: flutter pub get
+
+      - name: 🔍 Check Package Version
+        run: dart run hooks:bump_version
+
+      - name: 📝 Check CHANGELOG
+        run: dart run hooks:update_changelog
