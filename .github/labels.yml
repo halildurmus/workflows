@@ -27,6 +27,10 @@
   color: 758f7c
   description: This issue or pull request already exists
 
+- name: example
+  color: 07A287
+  description: Sample code and demos
+
 - name: external dependency
   color: e5f6ef
   description: Requires changes in an external dependency
