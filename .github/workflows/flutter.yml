@@ -35,6 +35,10 @@ on:
         required: false
         type: string
         default: '80'
+      randomize_execution_order_of_tests:
+        required: false
+        type: boolean
+        default: false
       runs_on:
         required: false
         type: string
@@ -90,7 +94,7 @@ jobs:
 
       - name: 🧪 Run Tests
         if: ${{ inputs.run_tests && !inputs.check_coverage }}
-        run: flutter test -j ${{ inputs.concurrency }}
+        run: flutter test -j ${{ inputs.concurrency }} ${{ inputs.randomize_execution_order_of_tests && '--test-randomize-ordering-seed=random' || '' }}
 
       - name: 📦 Activate Coverage
         if: ${{ inputs.check_coverage }}
