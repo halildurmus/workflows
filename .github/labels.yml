@@ -102,6 +102,10 @@
   color: d4c5f9
   description: Changes that reverts a previous commit
 
+- name: skip-health-check
+  color: 75e221
+  description: Skips the health check in the PR
+
 - name: spike
   color: fbca04
   description: Investigation needed
