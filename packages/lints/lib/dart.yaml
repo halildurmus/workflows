@@ -131,7 +131,6 @@ linter:
     - type_literal_in_constant_pattern
     - unawaited_futures
     - unintended_html_in_doc_comment
-    - unintended_html_in_doc_comment
     - unnecessary_await_in_return
     - unnecessary_brace_in_string_interps
     - unnecessary_breaks
@@ -141,7 +140,6 @@ linter:
     - unnecessary_lambdas
     - unnecessary_late
     - unnecessary_library_directive
-    - unnecessary_library_name
     - unnecessary_library_name
     - unnecessary_new
     - unnecessary_null_aware_assignments
