@@ -103,7 +103,7 @@
   description: Changes that reverts a previous commit
 
 - name: skip-health-check
-  color: 75e221
+  color: "75e221" # needs to be a string
   description: Skips the health check in the PR
 
 - name: spike
