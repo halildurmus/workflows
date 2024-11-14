@@ -39,6 +39,10 @@ on:
         required: false
         type: string
         default: 'ubuntu-latest'
+      run_tests:
+        required: false
+        type: boolean
+        default: true
       setup:
         required: false
         type: string
@@ -85,7 +89,7 @@ jobs:
         run: flutter analyze ${{ inputs.analyze_directories }}
 
       - name: 🧪 Run Tests
-        if: ${{ !inputs.check_coverage }}
+        if: ${{ inputs.run_tests && !inputs.check_coverage }}
         run: flutter test -j ${{ inputs.concurrency }}
 
       - name: 📦 Activate Coverage
