@@ -1,14 +1,14 @@
 version: 2
 updates:
-  - package-ecosystem: 'github-actions'
-    directory: '/'
+  - package-ecosystem: github-actions
+    directory: /
     schedule:
-      interval: 'daily'
-  - package-ecosystem: 'pub'
-    directory: '/packages/hooks'
+      interval: daily
+  - package-ecosystem: pub
+    directory: /packages/hooks
     schedule:
-      interval: 'daily'
-  - package-ecosystem: 'pub'
-    directory: '/packages/next_version'
+      interval: daily
+  - package-ecosystem: pub
+    directory: /packages/next_version
     schedule:
-      interval: 'daily'
+      interval: daily
