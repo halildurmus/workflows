@@ -1,0 +1,6 @@
+name: lints
+description: Recommended lints for Dart and Flutter projects to enforce good
+  coding practices.
+
+environment:
+  sdk: ^3.5.0
