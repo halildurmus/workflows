@@ -1,134 +1,134 @@
 - name: breaking change
-  color: e3846d
+  color: 'ff0000'
   description: Changes that break existing functionality
   aliases: [breaking]
 
 - name: bug
-  color: d73a4a
+  color: 'e63946'
   description: Something isn't working as expected
   aliases: [bugfix]
 
 - name: build
-  color: 1d7363
+  color: '228B22'
   description: Changes to the build system or dependencies
 
 - name: chore
-  color: d2d2d2
+  color: 'b0b0b0'
   description: Non-functional updates or maintenance tasks
   aliases: [maintenance, cleanup]
 
 - name: ci
-  color: 40f448
+  color: '32CD32'
   description: Updates to CI workflows or scripts
   aliases: [github_actions]
 
 - name: documentation
-  color: 0075ca
+  color: '4682B4'
   description: Improvements or additions to documentation
   aliases: [docs]
 
 - name: duplicate
-  color: 758f7c
+  color: 'a9a9a9'
   description: Issue or PR already exists
 
 - name: example
-  color: 07A287
+  color: '20b2aa'
   description: Sample code and demos
 
 - name: external dependency
-  color: e5f6ef
+  color: '8a2be2'
   description: Requires changes in an external dependency
   aliases: [dependencies]
 
 - name: external help wanted
-  color: '008672' # needs to be a string
+  color: '00ced1'
   description: Looking for help on this ticket from the community
   aliases: [help wanted]
 
 - name: feature
-  color: 14caec
+  color: '14caec'
   description: A new feature or request
   aliases: [enhancement]
 
 - name: good first issue
-  color: 7057ff
+  color: '9370db'
   description: Suitable for new contributors
 
 - name: has repro steps
-  color: 3799b8
+  color: '4682B4'
   description: Includes steps to reproduce the issue
 
 - name: invalid
-  color: e4e669
+  color: 'f4a460'
   description: Not applicable or incorrect
 
 - name: investigating
-  color: ce37f8
+  color: 'ff6347'
   description: Under investigation for cause or scope
 
 - name: needs repro steps
-  color: '910578' # needs to be a string
-  description:  Lacks steps to reproduce the issue
+  color: 'e9967a'
+  description: Lacks steps to reproduce the issue
 
 - name: needs triage
-  color: '000000' # needs to be a string
+  color: '696969'
   description: Pending categorization or prioritization
 
-- name: p0
-  color: ff0000
+- name: P0
+  color: 'ff0000'
   description: Critical-priority issue such as a build break or regression
 
-- name: p1
-  color: '990000' # needs to be a string
+- name: P1
+  color: '990000'
   description: High-priority issue
 
-- name: p2
-  color: '884242' # needs to be a string
+- name: P2
+  color: '770000'
   description: Medium-priority issue
 
-- name: p3
-  color: '664242' # needs to be a string
+- name: P3
+  color: '550000'
   description: Low-priority issue
 
 - name: performance
-  color: f9d0c4
+  color: 'ffb6c1'
   description: Changes that improve performance
 
 - name: refactor
-  color: e29a12
+  color: 'ffa07a'
   description: Code changes without new features or fixes
 
 - name: release
-  color: 0075ca
+  color: '4169e1'
   description: Release preparation and versioning tasks
 
 - name: revert
-  color: d4c5f9
+  color: 'd4c5f9'
   description: Reverts a previous commit
 
 - name: skip health check
-  color: '75e221' # needs to be a string
+  color: '32cd32'
   description: Skips the "Health" check for the PR
 
 - name: style
-  color: df76c7
+  color: 'da70d6'
   description: Code formatting or styling changes
 
 - name: test
-  color: 4f0fb9
+  color: '4b0082'
   description: Changes that add missing tests or correcting existing tests
   aliases: [tests]
 
 - name: tool
-  color: 0031D6
+  color: '2e8b57'
   description: Updates internal tooling
 
 - name: waiting for response
-  color: c68654
+  color: 'c68654'
   description: Pending further feedback
   aliases: [waiting for feedback]
 
 - name: won't fix
-  color: ffffff
+  color: '696969'
   description: Will not be addressed
   aliases: [wontfix, out of scope]
