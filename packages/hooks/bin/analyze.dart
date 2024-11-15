@@ -13,7 +13,10 @@ void main(List<String> args) {
   final argResults = argsParser.parse(args);
   final executable = argResults.flag('flutter') ? 'flutter' : 'dart';
   final analyzeArgs = ['--fatal-infos', '--fatal-warnings', ...argResults.rest];
-  print('🔍 Analyzing code...');
+  print(
+    '🔍 Analyzing code with command: '
+    '$executable analyze ${analyzeArgs.join(' ')}',
+  );
   final result = Process.runSync(
     executable,
     ['analyze', ...analyzeArgs],
