@@ -21,7 +21,13 @@ void main(List<String> args) {
   if (result.exitCode == 0) {
     print('✅ All tests passed successfully.');
   } else {
-    print('🚨 Test failure(s) detected:\n\n${result.stdout}');
+    print('🚨 Test failure(s) detected:');
+    if (result.stdout case final String stdout when stdout.isNotEmpty) {
+      print(stdout);
+    }
+    if (result.stderr case final String stderr when stderr.isNotEmpty) {
+      print(stderr);
+    }
     print('🛑 Please review the test failure(s) above.');
   }
   exit(result.exitCode);
