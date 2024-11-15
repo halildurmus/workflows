@@ -22,7 +22,13 @@ void main(List<String> args) {
   if (result.exitCode == 0) {
     print('✅ Analysis completed without issues.');
   } else {
-    print('🚨 Analyzer issue(s) detected:\n\n${result.stdout}');
+    print('🚨 Analyzer issue(s) detected:');
+    if (result.stdout case final String stdout when stdout.isNotEmpty) {
+      print(stdout);
+    }
+    if (result.stderr case final String stderr when stderr.isNotEmpty) {
+      print(stderr);
+    }
     print('🛑 Please fix the issue(s) above.');
   }
   exit(result.exitCode);
