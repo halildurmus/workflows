@@ -19,6 +19,10 @@ on:
         required: false
         type: string
         default: 'ubuntu-latest'
+      update_changelog_args:
+        required: false
+        type: string
+        default: ''
       use_flutter:
         required: false
         type: boolean
@@ -74,4 +78,4 @@ jobs:
           crate: git-cliff
           
       - name: 📝 Check CHANGELOG
-        run: dart run hooks:update_changelog
+        run: dart run hooks:update_changelog ${{ inputs.update_changelog_args }}
