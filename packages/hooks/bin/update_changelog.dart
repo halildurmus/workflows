@@ -3,10 +3,10 @@ import 'dart:io';
 
 void main(List<String> args) {
   // Define the git cliff arguments.
-  const gitCliffArgs = ['cliff', 'changelog', '--unreleased'];
+  final gitCliffArgs = ['changelog', '--unreleased', ...args];
 
   // Run the git cliff changelog command.
-  final result = Process.runSync('git', gitCliffArgs, stdoutEncoding: utf8);
+  final result = Process.runSync('git', ['cliff', ...gitCliffArgs], stdoutEncoding: utf8);
   // Handle changelog result.
   if (result.exitCode != 0) {
     _exitWithError('🚨 Error generating changelog:');
