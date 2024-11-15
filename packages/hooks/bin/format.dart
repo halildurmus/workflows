@@ -5,7 +5,10 @@ void main(List<String> args) {
     '--set-exit-if-changed',
     if (args.isEmpty) '.' else ...args
   ];
-  print('🧹 Checking code style...');
+  print(
+    '🧹 Checking code style with command: '
+    'dart format ${formatArgs.join(' ')}',
+  );
   final result = Process.runSync('dart', ['format', ...formatArgs]);
   if (result.exitCode == 0) {
     print('✅ Code is properly formatted. No changes needed.');
