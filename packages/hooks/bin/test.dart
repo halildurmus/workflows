@@ -13,7 +13,11 @@ void main(List<String> args) {
   final argResults = argsParser.parse(args);
   final executable = argResults.flag('flutter') ? 'flutter' : 'dart';
   print('🧪 Running tests...');
-  final result = Process.runSync(executable, ['test', ...argResults.rest]);
+  final result = Process.runSync(
+    executable,
+    ['test', ...argResults.rest],
+    runInShell: true,
+  );
   if (result.exitCode == 0) {
     print('✅ All tests passed successfully.');
   } else {
