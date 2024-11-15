@@ -9,7 +9,13 @@ void main(List<String> args) {
   final result = Process.runSync('git', gitCliffArgs, stdoutEncoding: utf8);
   // Handle changelog result.
   if (result.exitCode != 0) {
-    _exitWithError('🚨 Error generating changelog:\n${result.stdout}');
+    _exitWithError('🚨 Error generating changelog:');
+    if (result.stdout case final String stdout when stdout.isNotEmpty) {
+      print(stdout);
+    }
+    if (result.stderr case final String stderr when stderr.isNotEmpty) {
+      print(stderr);
+    }
   }
 
   final newChangelog = result.stdout.toString().toUnixLineEndings().trim();
