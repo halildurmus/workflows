@@ -103,7 +103,7 @@ jobs:
 
       - name: 📡 Upload Code Coverage Reports to Codecov
         if: ${{ inputs.check_coverage }}
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           fail_ci_if_error: true
           files: coverage/lcov.info
