@@ -2,6 +2,10 @@
   color: '4310DE'
   description: Replace handcrafted code that doesn't scale 
 
+- name: blocked
+  color: '241B02'
+  description: Waiting on an external issue to be resolved
+
 - name: breaking change
   color: 'ff0000'
   description: Changes that break existing functionality
