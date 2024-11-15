@@ -1,31 +1,35 @@
 - name: breaking change
   color: e3846d
-  description: A change that will cause existing functionality to change or fail
+  description: Changes that break existing functionality
+  aliases: [breaking]
 
 - name: bug
   color: d73a4a
   description: Something isn't working as expected
+  aliases: [bugfix]
 
 - name: build
   color: 1d7363
-  description: Changes that affect the build system or external dependencies
+  description: Changes to the build system or dependencies
 
 - name: chore
   color: d2d2d2
-  description: Changes that don't modify source code or tests
+  description: Non-functional updates or maintenance tasks
+  aliases: [maintenance, cleanup]
 
 - name: ci
   color: 40f448
-  description: Changes to continuous integration
+  description: Updates to CI workflows or scripts
   aliases: [github_actions]
 
 - name: documentation
   color: 0075ca
   description: Improvements or additions to documentation
+  aliases: [docs]
 
 - name: duplicate
   color: 758f7c
-  description: This issue or pull request already exists
+  description: Issue or PR already exists
 
 - name: example
   color: 07A287
@@ -37,7 +41,7 @@
   aliases: [dependencies]
 
 - name: external help wanted
-  color: "008672" # needs to be a string
+  color: '008672' # needs to be a string
   description: Looking for help on this ticket from the community
   aliases: [help wanted]
 
@@ -48,43 +52,43 @@
 
 - name: good first issue
   color: 7057ff
-  description: Good for newcomers
+  description: Suitable for new contributors
 
-- name: has reproductive steps
+- name: has repro steps
   color: 3799b8
-  description: This issue contains detailed steps to reproduce the issue
+  description: Includes steps to reproduce the issue
 
 - name: invalid
   color: e4e669
-  description: This doesn't seem right
+  description: Not applicable or incorrect
 
 - name: investigating
   color: ce37f8
-  description: This is currently being looked into to understand the cause/scope
+  description: Under investigation for cause or scope
 
-- name: needs reproductive steps
-  color: "910578" # needs to be a string
-  description: This issue lacks sufficient details and further information in needed
+- name: needs repro steps
+  color: '910578' # needs to be a string
+  description:  Lacks steps to reproduce the issue
 
 - name: needs triage
-  color: "000000" # needs to be a string
-  description: Issue requires triage
+  color: '000000' # needs to be a string
+  description: Pending categorization or prioritization
 
 - name: p0
   color: ff0000
-  description: Critical issues such as a build break or regression
+  description: Critical-priority issue such as a build break or regression
 
 - name: p1
-  color: "990000" # needs to be a string
-  description: High-priority issues at the top of the work list
+  color: '990000' # needs to be a string
+  description: High-priority issue
 
 - name: p2
-  color: "770000" # needs to be a string
-  description: Important issues not at the top of the work list
+  color: '884242' # needs to be a string
+  description: Medium-priority issue
 
 - name: p3
-  color: "550000" # needs to be a string
-  description: Issues that we currently consider unimportant
+  color: '664242' # needs to be a string
+  description: Low-priority issue
 
 - name: performance
   color: f9d0c4
@@ -92,7 +96,7 @@
 
 - name: refactor
   color: e29a12
-  description: A code change that neither fixes a bug nor add a feature
+  description: Code changes without new features or fixes
 
 - name: release
   color: 0075ca
@@ -100,19 +104,15 @@
 
 - name: revert
   color: d4c5f9
-  description: Changes that reverts a previous commit
+  description: Reverts a previous commit
 
-- name: skip-health-check
-  color: "75e221" # needs to be a string
-  description: Skips the health check in the PR
-
-- name: spike
-  color: fbca04
-  description: Investigation needed
+- name: skip health check
+  color: '75e221' # needs to be a string
+  description: Skips the "Health" check for the PR
 
 - name: style
   color: df76c7
-  description: Changes that do not affect the meaning of the code
+  description: Code formatting or styling changes
 
 - name: test
   color: 4f0fb9
@@ -121,14 +121,14 @@
 
 - name: tool
   color: 0031D6
-  description: Changes that effect the projects internal tooling
+  description: Updates internal tooling
 
 - name: waiting for response
   color: c68654
-  description: Waiting for follow up
+  description: Pending further feedback
   aliases: [waiting for feedback]
 
 - name: won't fix
   color: ffffff
-  description: This will not be worked on
+  description: Will not be addressed
   aliases: [wontfix, out of scope]
