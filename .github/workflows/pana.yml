@@ -34,8 +34,8 @@ jobs:
       - name: 🐦 Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: stable
           cache: true
+          cache-key: flutter-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
 
       - name: 📦 Install Pana
         run: flutter pub global activate pana ${{ inputs.pana_version }}
