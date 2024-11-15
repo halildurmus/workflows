@@ -1,3 +1,7 @@
+- name: automation
+  color: '4310DE'
+  description: Replace handcrafted code that doesn't scale 
+
 - name: breaking change
   color: 'ff0000'
   description: Changes that break existing functionality
@@ -30,6 +34,10 @@
 - name: duplicate
   color: 'a9a9a9'
   description: Issue or PR already exists
+
+- name: epic
+  color: '640AAC'
+  description: A theme of work that contain sub-tasks
 
 - name: example
   color: '20b2aa'
