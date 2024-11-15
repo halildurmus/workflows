@@ -11,6 +11,10 @@ on:
         required: false
         type: string
         default: 'ubuntu-latest'
+      use_flutter:
+        required: false
+        type: boolean
+        default: false
       working_directory:
         required: false
         type: string
@@ -32,6 +36,13 @@ jobs:
         uses: dart-lang/setup-dart@v1
         with:
           sdk: ${{ inputs.dart_sdk }}
+
+      - name: 🐦 Setup Flutter
+        if: ${{ inputs.use_flutter }}
+        uses: subosito/flutter-action@v2
+        with:
+          cache: true
+          cache-key: flutter-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
 
       - name: 📒 Check API Documentation
         run: dart doc --dry-run
