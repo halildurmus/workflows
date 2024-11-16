@@ -21,14 +21,13 @@ void main(List<String> args) {
   commitMessages.forEach(print);
 
   final nextVersion = _calculateNextVersion(lastTag, commitMessages);
-  final nextWipVersion = '$nextVersion-wip';
-  if (nextWipVersion == currentVersion) {
+  if (nextVersion.toString() == currentVersion) {
     print('✅ No version bump required.');
     return;
   }
 
-  print('🚀 Next WIP version: $nextWipVersion');
-  _updatePubspecVersion(pubspecFile, yamlEditor, nextWipVersion);
+  print('🚀 Next version: $nextVersion');
+  _updatePubspecVersion(pubspecFile, yamlEditor, nextVersion.toString());
 }
 
 String _getCurrentVersion(YamlEditor yamlEditor) {
@@ -51,7 +50,9 @@ String _getLastGitTag() {
   if (result.exitCode != 0) {
     _exitWithError('❌ Failed to retrieve the latest Git tag.');
   }
-  return result.stdout.toString().trim();
+  final lastTag = result.stdout.toString().trim();
+  print('🏷️  Last Git tag: $lastTag');
+  return lastTag;
 }
 
 List<String> _getCommitMessagesSince(String latestTag) {
@@ -84,10 +85,6 @@ void _updatePubspecVersion(
     yamlEditor.update(['version'], nextVersion);
     pubspecFile.writeAsStringSync(yamlEditor.toString());
     print('📦 Updated version in pubspec.yaml to: $nextVersion');
-    print('💡 To apply the update, stage and amend the commit:');
-    print('   git add pubspec.yaml');
-    print('   git commit --amend -C HEAD --no-verify');
-    exit(1);
   } catch (e) {
     _exitWithError('❌ Error updating pubspec.yaml: $e');
   }
