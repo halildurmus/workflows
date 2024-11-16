@@ -72,7 +72,8 @@ jobs:
         run: |
           if ! command -v git-cliff &> /dev/null; then
             curl -L -o git-cliff.tar.gz https://github.com/orhun/git-cliff/releases/download/v2.6.1/git-cliff-2.6.1-x86_64-unknown-linux-gnu.tar.gz
-            sudo tar -xzf git-cliff.tar.gz -C /usr/local/bin
+            sudo tar -xf git-cliff.tar.gz
+            mv git-cliff-2.6.1/git-cliff /usr/local/bin
           fi
           git-cliff --version
 
