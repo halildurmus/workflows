@@ -118,10 +118,6 @@
   color: 'd4c5f9'
   description: Reverts a previous commit
 
-- name: skip health check
-  color: '32cd32'
-  description: Skips the "Health" check for the PR
-
 - name: style
   color: 'da70d6'
   description: Code formatting or styling changes
