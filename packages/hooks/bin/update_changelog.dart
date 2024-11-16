@@ -41,10 +41,6 @@ void _updateChangelog(String newChangelog) {
 
     changelogFile.writeAsStringSync(changelogContent);
     print('📝 Changelog updated successfully.');
-    print('💡 To apply the update, stage and amend the commit:');
-    print('   git add CHANGELOG.md');
-    print('   git commit --amend -C HEAD --no-verify');
-    exit(1);
   } catch (e) {
     print('🚨 Error updating changelog: $e');
     exit(1);
