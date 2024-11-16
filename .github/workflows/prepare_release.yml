@@ -3,6 +3,18 @@ name: Prepare Release Workflow
 on:
   workflow_call:
     inputs:
+      dart_sdk:
+        required: false
+        type: string
+        default: stable
+      dry_run:
+        required: false
+        type: boolean
+        default: false
+      update_changelog_args:
+        required: false
+        type: string
+        default: ''
       working_directory:
         required: false
         type: string
@@ -22,38 +34,49 @@ jobs:
     steps:
       - name: 📚 Git Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: 🔄 Remove "-wip" Suffix from Version and Update Changelog
+      - name: 🎯 Setup Dart
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: ${{ inputs.dart_sdk }}
+
+      - name: 📦 Install Dependencies
+        run: dart pub get
+
+      - name: 📦 Install git-cliff
         run: |
-          # Get the current version and remove "-wip" suffix
-          current_version=$(grep '^version:' pubspec.yaml | awk '{print $2}')
-          next_version=${current_version%-wip}
+          if ! command -v git-cliff &> /dev/null; then
+            curl -L -o git-cliff.tar.gz https://github.com/orhun/git-cliff/releases/download/v2.6.1/git-cliff-2.6.1-x86_64-unknown-linux-gnu.tar.gz
+            sudo tar -xf git-cliff.tar.gz --strip-components=1 -C /usr/local/bin
+            rm git-cliff.tar.gz
+          fi
+          git-cliff --version
 
-          # Update pubspec.yaml with the new version
-          sed -i "s/^version: .*/version: $next_version/" pubspec.yaml
-          echo "next_version=$next_version" >> $GITHUB_ENV
+      - name: 🔼 Bump Version
+        run: |
+          dart run hooks:bump_version
+          echo "next_version=$(grep '^version:' pubspec.yaml | head -n 1 | awk '{print $2}')" >> $GITHUB_ENV
 
-          # Update the CHANGELOG.md with the new version and today's date
-          today=$(date +"%Y-%m-%d")
-          sed -i "s/## \[unreleased\]/## [$next_version] - $today/" CHANGELOG.md
+      - name: 📝 Update CHANGELOG
+        run: dart run hooks:update_changelog --tag v${{ env.next_version }} ${{ inputs.update_changelog_args }}
 
-          # Update the [unreleased] link in the CHANGELOG.md with the new version
-          sed -i "s/^\[unreleased\]: \(.*compare\/v[0-9.]*\)\.\.HEAD/[$next_version]: \1..v$next_version/" CHANGELOG.md
-
-          # Commit changes
+      - name: 📜 Commit Changes
+        if: ${{ !inputs.dry_run }}
+        run: |
           git config user.name "Halil Durmus"
           git config user.email "durmushalil@proton.me"
           git add CHANGELOG.md pubspec.yaml
           git commit -m "chore(release): v${next_version}"
 
       - name: 🚀 Create Release Pull Request
+        if: ${{ !inputs.dry_run }}
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.token }}
           commit-message: 'chore(release): v${{ env.next_version }}'
           branch: release-${{ env.next_version }}
           title: 'chore(release): v${{ env.next_version }}'
-          body: This PR prepares the release of version v${{ env.next_version }}.
-          labels: |
-            release
-            skip health check
+          body: This PR prepares the release of version `v${{ env.next_version }}`.
+          labels: release
