@@ -6,16 +6,18 @@ void main(List<String> args) {
   final gitCliffArgs = ['changelog', '--unreleased', ...args];
 
   // Run the git cliff changelog command.
-  final result = Process.runSync('git', ['cliff', ...gitCliffArgs], stdoutEncoding: utf8);
+  final result =
+      Process.runSync('git', ['cliff', ...gitCliffArgs], stdoutEncoding: utf8);
   // Handle changelog result.
   if (result.exitCode != 0) {
-    _exitWithError('🚨 Error generating changelog:');
+    print('🚨 Error generating changelog:');
     if (result.stdout case final String stdout when stdout.isNotEmpty) {
       print(stdout);
     }
     if (result.stderr case final String stderr when stderr.isNotEmpty) {
       print(stderr);
     }
+    exit(result.exitCode);
   }
 
   final newChangelog = result.stdout.toString().toUnixLineEndings().trim();
@@ -51,13 +53,9 @@ void _updateChangelog(String newChangelog) {
     print('   git commit --amend -C HEAD --no-verify');
     exit(1);
   } catch (e) {
-    _exitWithError('🚨 Error updating changelog: $e');
+    print('🚨 Error updating changelog: $e');
+    exit(1);
   }
-}
-
-void _exitWithError(String message) {
-  print(message);
-  exit(1);
 }
 
 extension on String {
