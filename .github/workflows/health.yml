@@ -15,10 +15,6 @@ on:
         required: false
         type: string
         default: ''
-      runs_on:
-        required: false
-        type: string
-        default: 'ubuntu-latest'
       update_changelog_args:
         required: false
         type: string
@@ -38,7 +34,7 @@ jobs:
       run:
         working-directory: ${{ inputs.working_directory }}
 
-    runs-on: ${{ inputs.runs_on }}
+    runs-on: ubuntu-latest
 
     steps:
       - name: 📚 Git Checkout
@@ -73,9 +69,11 @@ jobs:
         run: dart run hooks:bump_version
 
       - name: 📦 Install git-cliff
-        uses: baptiste0928/cargo-install@v3
-        with:
-          crate: git-cliff
-          
+        run: |
+          if ! command -v git-cliff &> /dev/null; then
+            curl -L -o git-cliff.tar.gz https://github.com/orhun/git-cliff/releases/latest/download/git-cliff-x86_64-unknown-linux-gnu.tar.gz
+            sudo tar -xzf git-cliff.tar.gz -C /usr/local/bin
+          fi
+
       - name: 📝 Check CHANGELOG
         run: dart run hooks:update_changelog ${{ inputs.update_changelog_args }}
