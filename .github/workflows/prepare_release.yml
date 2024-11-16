@@ -11,10 +11,22 @@ on:
         required: false
         type: boolean
         default: false
+      flutter_channel:
+        required: false
+        type: string
+        default: 'stable'
+      flutter_version:
+        required: false
+        type: string
+        default: ''
       update_changelog_args:
         required: false
         type: string
         default: ''
+      use_flutter:
+        required: false
+        type: boolean
+        default: false
       working_directory:
         required: false
         type: string
@@ -38,12 +50,27 @@ jobs:
           fetch-depth: 0
 
       - name: 🎯 Setup Dart
+        if: ${{ !inputs.use_flutter }}
         uses: dart-lang/setup-dart@v1
         with:
           sdk: ${{ inputs.dart_sdk }}
 
+      - name: 🐦 Setup Flutter
+        if: ${{ inputs.use_flutter }}
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ inputs.flutter_version }}
+          channel: ${{ inputs.flutter_channel }}
+          cache: true
+          cache-key: flutter-:os:-:channel:-:version:-:arch:-:hash:-${{ hashFiles('**/pubspec.lock') }}
+
       - name: 📦 Install Dependencies
-        run: dart pub get
+        run: |
+          if [ "${{ inputs.use_flutter }}" = "true" ]; then
+            flutter pub get
+          else
+            dart pub get
+          fi
 
       - name: 📦 Install git-cliff
         run: |
