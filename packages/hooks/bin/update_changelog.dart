@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 
 void main(List<String> args) {
-  // Define the git cliff arguments.
+  // Define the git-cliff arguments.
   final gitCliffArgs = ['changelog', '--unreleased', ...args];
 
-  // Run the git cliff changelog command.
+  // Run the git-cliff changelog command.
   final result =
-      Process.runSync('git', ['cliff', ...gitCliffArgs], stdoutEncoding: utf8);
+      Process.runSync('git-cliff', gitCliffArgs, stdoutEncoding: utf8);
   // Handle changelog result.
   if (result.exitCode != 0) {
     print('🚨 Error generating changelog:');
