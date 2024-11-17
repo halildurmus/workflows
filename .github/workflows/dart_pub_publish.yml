@@ -53,8 +53,19 @@ jobs:
         run: dart pub publish --dry-run
 
       - name: ⬇️ Download extract_latest_changelog.dart
-        if: ${{ !inputs.dry_run }}
         run: curl -L https://raw.githubusercontent.com/halildurmus/workflows/main/tools/extract_latest_changelog.dart
+
+      - name: 🔍 Extract Version
+        run: |
+          version=$(grep '^version:' pubspec.yaml | head -n 1 | awk '{print $2}')
+          echo "🚀 Version: $version"
+          echo "version=$version" >> $GITHUB_ENV
+
+      - name: 🔍 Extract Changelog
+        run: |
+          changelog=$(dart extract_latest_changelog.dart)
+          echo "📝 Changelog: $changelog"
+          echo "changelog=$changelog" >> $GITHUB_ENV
 
       - name: 🚀 Create GitHub Release
         if: ${{ !inputs.dry_run }}
@@ -62,9 +73,9 @@ jobs:
         with:
           token: ${{ secrets.token }}
           commit: main
-          tag: "v$(grep '^version:' pubspec.yaml | head -n 1 | awk '{print $2}')"
-          name: "v$(grep '^version:' pubspec.yaml | head -n 1 | awk '{print $2}')"
-          body: $(dart run extract_latest_changelog.dart)
+          tag: v${{ env.version }}
+          name: v${{ env.version }}
+          body: '${{ env.changelog }}'
           draft: false
           prerelease: false
 
