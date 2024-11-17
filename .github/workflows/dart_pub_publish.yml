@@ -27,6 +27,9 @@ on:
       token:
         required: true
 
+permissions:
+  id-token: write
+
 jobs:
   publish:
     defaults:
@@ -78,7 +81,7 @@ jobs:
           tag: 'v${{ steps.extract_version.outputs.version }}'
           name: 'v${{ steps.extract_version.outputs.version }}'
           bodyFile: changelog.txt
-          draft: false
+          draft: true
           prerelease: false
 
       - name: 🧹 Clean Up
