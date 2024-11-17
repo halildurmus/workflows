@@ -68,7 +68,7 @@ jobs:
           changelog=$(dart run extract_latest_changelog.dart)
           echo "📝 Changelog:"
           echo "$changelog"
-          echo "changelog=$changelog" >> $GITHUB_OUTPUT
+          echo "::set-output name=changelog::$(echo "$changelog" | jq -R -s .)"
 
       - name: 🚀 Create GitHub Release
         if: ${{ !inputs.dry_run }}
@@ -79,9 +79,9 @@ jobs:
           tag: 'v${{ steps.extract_version.outputs.version }}'
           name: 'v${{ steps.extract_version.outputs.version }}'
           body: '${{ steps.extract_changelog.outputs.changelog }}'
-          draft: false
+          draft: true
           prerelease: false
 
-      - name: 📢 Publish
-        if: ${{ !inputs.dry_run }}
-        run: dart pub publish -f
+      # - name: 📢 Publish
+      #   if: ${{ !inputs.dry_run }}
+      #   run: dart pub publish -f
