@@ -1,0 +1,88 @@
+name: Flutter Release Workflow
+
+on:
+  workflow_call:
+    inputs:
+      dry_run:
+        required: false
+        type: boolean
+        default: false
+      flutter_channel:
+        required: false
+        type: string
+        default: 'stable'
+      flutter_version:
+        required: false
+        type: string
+        default: ''
+      runs_on:
+        required: false
+        type: string
+        default: ubuntu-latest
+      timeout_minutes:
+        required: false
+        type: number
+        default: 5
+      working_directory:
+        required: false
+        type: string
+        default: '.'
+    secrets:
+      token:
+        required: true
+
+jobs:
+  publish:
+    defaults:
+      run:
+        working-directory: ${{ inputs.working_directory }}
+
+    runs-on: ${{ inputs.runs_on }}
+
+    timeout-minutes: ${{ inputs.timeout_minutes }}
+
+    steps:
+      - name: 📚 Git Checkout
+        uses: actions/checkout@v4
+
+      - name: 🐦 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ inputs.flutter_version }}
+          channel: ${{ inputs.flutter_channel }}
+          cache: true
+
+      - name: 📦 Install Dependencies
+        run: flutter pub get
+
+      - name: 🌵 Dry Run
+        run: flutter pub publish --dry-run
+
+      - name: ⬇️ Download extract_latest_changelog.dart
+        run: curl -fLo extract_latest_changelog.dart https://raw.githubusercontent.com/halildurmus/workflows/main/tools/extract_latest_changelog.dart
+
+      - name: 🔍 Extract Version
+        id: extract_version
+        run: |
+          version=$(grep '^version:' pubspec.yaml | head -n 1 | awk '{print $2}')
+          echo "🚀 Version: $version"
+          echo "version=$version" >> $GITHUB_OUTPUT
+
+      - name: 🔍 Extract Changelog
+        run: |
+          changelog=$(dart run extract_latest_changelog.dart)
+          echo "📝 Changelog:"
+          echo "$changelog"
+          echo "$changelog" > changelog.txt
+
+      - name: 🚀 Create GitHub Release
+        if: ${{ !inputs.dry_run }}
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.token }}
+          commit: main
+          tag: 'v${{ steps.extract_version.outputs.version }}'
+          name: 'v${{ steps.extract_version.outputs.version }}'
+          bodyFile: changelog.txt
+          draft: false
+          prerelease: false
