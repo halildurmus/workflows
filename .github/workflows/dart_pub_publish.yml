@@ -53,7 +53,7 @@ jobs:
         run: dart pub publish --dry-run
 
       - name: ⬇️ Download extract_latest_changelog.dart
-        run: curl -L https://raw.githubusercontent.com/halildurmus/workflows/main/tools/extract_latest_changelog.dart
+        run: curl -fLo extract_latest_changelog.dart https://raw.githubusercontent.com/halildurmus/workflows/main/tools/extract_latest_changelog.dart
 
       - name: 🔍 Extract Version
         run: |
@@ -63,7 +63,7 @@ jobs:
 
       - name: 🔍 Extract Changelog
         run: |
-          changelog=$(dart extract_latest_changelog.dart)
+          changelog=$(dart run extract_latest_changelog.dart)
           echo "📝 Changelog: $changelog"
           echo "changelog=$changelog" >> $GITHUB_ENV
 
