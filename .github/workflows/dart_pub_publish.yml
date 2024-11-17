@@ -81,6 +81,19 @@ jobs:
           draft: false
           prerelease: false
 
+      - name: 🧹 Clean Up
+        run: rm -f extract_latest_changelog.dart changelog.txt
+
+      - name: 🪪 Get Id Token
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pub_token = await core.getIDToken('https://pub.dev')
+            core.exportVariable('PUB_TOKEN', pub_token)
+
+      - name: 📢 Authenticate
+        run: dart pub token add https://pub.dev --env-var PUB_TOKEN
+
       - name: 📢 Publish
         if: ${{ !inputs.dry_run }}
         run: dart pub publish -f
