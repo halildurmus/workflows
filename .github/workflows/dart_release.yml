@@ -77,6 +77,6 @@ jobs:
           commit: main
           tag: 'v${{ steps.extract_version.outputs.version }}'
           name: 'v${{ steps.extract_version.outputs.version }}'
-          bodyFile: changelog.txt
+          bodyFile: ${{ inputs.working_directory }}/changelog.txt
           draft: false
           prerelease: false
