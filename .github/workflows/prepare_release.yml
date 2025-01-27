@@ -105,5 +105,5 @@ jobs:
           commit-message: 'chore(release): v${{ env.next_version }}'
           branch: release-${{ env.next_version }}
           title: 'chore(release): v${{ env.next_version }}'
-          body: This PR prepares the release of version `v${{ env.next_version }}`.
+          body: This PR prepares the release of `v${{ env.next_version }}`.
           labels: release
