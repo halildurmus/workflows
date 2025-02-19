@@ -87,7 +87,7 @@ jobs:
           echo "next_version=$(grep '^version:' pubspec.yaml | head -n 1 | awk '{print $2}')" >> $GITHUB_ENV
 
       - name: 📝 Update CHANGELOG
-        run: dart run hooks:update_changelog --tag ${{ env.next_version }} ${{ inputs.update_changelog_args }}
+        run: dart run hooks:update_changelog --tag v${{ env.next_version }} ${{ inputs.update_changelog_args }}
 
       - name: 📜 Commit Changes
         if: ${{ !inputs.dry_run }}
