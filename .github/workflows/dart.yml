@@ -95,7 +95,7 @@ jobs:
 
       - name: 📦 Activate Coverage
         if: ${{ inputs.check_coverage }}
-        run: dart pub global activate coverage
+        run: dart pub global activate coverage 1.11.1
 
       - name: 📊 Generate Code Coverage
         if: ${{ inputs.check_coverage }}
