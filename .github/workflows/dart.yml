@@ -19,6 +19,14 @@ on:
         required: false
         type: string
         default: '6'
+      coverage_args:
+        required: false
+        type: string
+        default: ''
+      coverage_version:
+        required: false
+        type: string
+        default: ''
       dart_sdk:
         required: false
         type: string
@@ -95,11 +103,11 @@ jobs:
 
       - name: 📦 Activate Coverage
         if: ${{ inputs.check_coverage }}
-        run: dart pub global activate coverage 1.11.1
+        run: dart pub global activate coverage ${{ coverage_version }}
 
       - name: 📊 Generate Code Coverage
         if: ${{ inputs.check_coverage }}
-        run: dart pub global run coverage:test_with_coverage -- -j ${{ inputs.concurrency }}
+        run: dart pub global run coverage:test_with_coverage -- -j ${{ inputs.concurrency }} ${{ inputs.coverage_args }}
 
       - name: 📡 Upload Code Coverage Reports to Codecov
         if: ${{ inputs.check_coverage }}
