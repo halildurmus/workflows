@@ -53,13 +53,18 @@ jobs:
         run: dart pub publish --dry-run
 
       - name: ⬇️ Download extract_latest_changelog.dart
-        run: curl -fLo extract_latest_changelog.dart https://raw.githubusercontent.com/halildurmus/workflows/main/tools/extract_latest_changelog.dart
+        run: curl -fLo extract_latest_changelog.dart https://raw.githubusercontent.com/halildurmus/tools/main/tools/extract_latest_changelog.dart
 
-      - name: 🔍 Extract Version
-        id: extract_version
+      - name: 🔍 Extract Package Metadata
+        id: extract_package_metadata
         run: |
+          name=$(grep '^name:' pubspec.yaml | head -n 1 | awk '{print $2}')
           version=$(grep '^version:' pubspec.yaml | head -n 1 | awk '{print $2}')
+
+          echo "📦 Package: $name"
           echo "🚀 Version: $version"
+
+          echo "name=$name" >> $GITHUB_OUTPUT
           echo "version=$version" >> $GITHUB_OUTPUT
 
       - name: 🔍 Extract Changelog
@@ -75,8 +80,8 @@ jobs:
         with:
           token: ${{ secrets.token }}
           commit: main
-          tag: 'v${{ steps.extract_version.outputs.version }}'
-          name: 'v${{ steps.extract_version.outputs.version }}'
+          tag: '${{ steps.extract_package_metadata.outputs.name }}-v${{ steps.extract_package_metadata.outputs.version }}'
+          name: 'package:${{ steps.extract_package_metadata.outputs.name }} v${{ steps.extract_package_metadata.outputs.version }}'
           bodyFile: ${{ inputs.working_directory }}/changelog.txt
           draft: false
           prerelease: false
