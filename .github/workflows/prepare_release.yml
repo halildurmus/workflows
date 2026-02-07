@@ -83,7 +83,7 @@ jobs:
 
       - name: 🔼 Bump Version
         run: |
-          dart run hooks:bump_version
+          dart run halildurmus_hooks:bump_version
 
       - name: 🔍 Extract Package Metadata
         id: extract_package_metadata
@@ -98,7 +98,7 @@ jobs:
           echo "version=$version" >> $GITHUB_OUTPUT
 
       - name: 📝 Update CHANGELOG
-        run: dart run hooks:update_changelog --tag ${{ steps.extract_package_metadata.outputs.name }}-v${{ steps.extract_package_metadata.outputs.version }} ${{ inputs.update_changelog_args }}
+        run: dart run halildurmus_hooks:update_changelog --tag ${{ steps.extract_package_metadata.outputs.name }}-v${{ steps.extract_package_metadata.outputs.version }} ${{ inputs.update_changelog_args }}
 
       - name: 📜 Commit Changes
         if: ${{ !inputs.dry_run }}
