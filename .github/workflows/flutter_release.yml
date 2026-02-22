@@ -75,10 +75,9 @@ jobs:
 
       - name: 🔍 Extract Changelog
         run: |
-          changelog=$(dart run extract_latest_changelog.dart)
+          dart run extract_latest_changelog.dart
           echo "📝 Changelog:"
-          echo "$changelog"
-          echo "$changelog" > changelog.txt
+          cat changelog.txt
 
       - name: 🚀 Create GitHub Release
         if: ${{ !inputs.dry_run }}
