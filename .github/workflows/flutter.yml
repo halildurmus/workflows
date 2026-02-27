@@ -19,6 +19,14 @@ on:
         required: false
         type: string
         default: '6'
+      coverage_args:
+        required: false
+        type: string
+        default: ''
+      coverage_version:
+        required: false
+        type: string
+        default: ''
       flutter_channel:
         required: false
         type: string
@@ -74,6 +82,7 @@ jobs:
       - name: 🐦 Setup Flutter
         uses: subosito/flutter-action@v2
         with:
+          architecture: x64
           flutter-version: ${{ inputs.flutter_version }}
           channel: ${{ inputs.flutter_channel }}
           cache: true
@@ -98,12 +107,12 @@ jobs:
 
       - name: 📦 Activate Coverage
         if: ${{ inputs.check_coverage }}
-        run: flutter pub global activate coverage
+        run: dart pub global activate coverage ${{ inputs.coverage_version }}
 
       - name: 📊 Generate Code Coverage
         if: ${{ inputs.check_coverage }}
-        run: flutter pub global run coverage:test_with_coverage -- -j ${{ inputs.concurrency }}
-        
+        run: dart pub global run coverage:test_with_coverage -- -j ${{ inputs.concurrency }} ${{ inputs.coverage_args }}
+
       - name: 📡 Upload Code Coverage Reports to Codecov
         if: ${{ inputs.check_coverage }}
         uses: codecov/codecov-action@v5
