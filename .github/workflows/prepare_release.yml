@@ -45,19 +45,19 @@ jobs:
 
     steps:
       - name: 📚 Git Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           fetch-depth: 0
 
       - name: 🎯 Setup Dart
         if: ${{ !inputs.use_flutter }}
-        uses: dart-lang/setup-dart@v1
+        uses: dart-lang/setup-dart@65eb853c7ba17dde3be364c3d2858773e7144260
         with:
           sdk: ${{ inputs.dart_sdk }}
 
       - name: 🐦 Setup Flutter
         if: ${{ inputs.use_flutter }}
-        uses: subosito/flutter-action@v2
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2
         with:
           flutter-version: ${{ inputs.flutter_version }}
           channel: ${{ inputs.flutter_channel }}
@@ -110,7 +110,7 @@ jobs:
 
       - name: 🚀 Create Release Pull Request
         if: ${{ !inputs.dry_run }}
-        uses: peter-evans/create-pull-request@v8
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1
         with:
           token: ${{ secrets.token }}
           commit-message: 'chore(release): `package:${{ steps.extract_package_metadata.outputs.name }}` v${{ steps.extract_package_metadata.outputs.version }}'

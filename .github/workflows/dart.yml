@@ -77,10 +77,10 @@ jobs:
 
     steps:
       - name: 📚 Git Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
       - name: 🎯 Setup Dart
-        uses: dart-lang/setup-dart@v1
+        uses: dart-lang/setup-dart@65eb853c7ba17dde3be364c3d2858773e7144260
         with:
           sdk: ${{ inputs.dart_sdk }}
 
@@ -111,7 +111,7 @@ jobs:
 
       - name: 📡 Upload Code Coverage Reports to Codecov
         if: ${{ inputs.check_coverage }}
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354
         with:
           fail_ci_if_error: true
           files: coverage/lcov.info
