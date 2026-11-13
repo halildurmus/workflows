@@ -110,7 +110,7 @@ jobs:
 
       - name: 🚀 Create Release Pull Request
         if: ${{ !inputs.dry_run }}
-        uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8
+        uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1
         with:
           token: ${{ secrets.token }}
           commit-message: 'chore(release): `package:${{ steps.extract_package_metadata.outputs.name }}` v${{ steps.extract_package_metadata.outputs.version }}'
